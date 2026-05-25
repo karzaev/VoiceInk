@@ -104,7 +104,6 @@ struct MetricsContent: View {
 
                             heroSection
                             metricsSection
-                            HelpAndResourcesSection()
 
                             Spacer(minLength: 20)
 
