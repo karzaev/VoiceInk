@@ -8,11 +8,6 @@ class TranscriptionAutoCleanupService {
     private let logger = Logger(subsystem: "com.prakashjoshipax.voiceink", category: "TranscriptionAutoCleanupService")
     private var modelContext: ModelContext?
 
-    private let keyIsEnabled = "IsTranscriptionCleanupEnabled"
-    private let keyRetentionMinutes = "TranscriptionRetentionMinutes"
-
-    private let defaultRetentionMinutes: Int = 24 * 60
-
     private var recordingsDirectory: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("com.prakashjoshipax.VoiceInk")
@@ -31,7 +26,7 @@ class TranscriptionAutoCleanupService {
             object: nil
         )
 
-        if UserDefaults.standard.bool(forKey: keyIsEnabled) {
+        if UserDefaults.standard.bool(forKey: CleanupSettingsKeys.isTranscriptionCleanupEnabled) {
             Task { [weak self] in
                 guard let self = self, let modelContext = self.modelContext else { return }
                 await self.sweepOldTranscriptions(modelContext: modelContext)
@@ -49,10 +44,10 @@ class TranscriptionAutoCleanupService {
     }
 
     @objc private func handleTranscriptionCompleted(_ notification: Notification) {
-        let isEnabled = UserDefaults.standard.bool(forKey: keyIsEnabled)
+        let isEnabled = UserDefaults.standard.bool(forKey: CleanupSettingsKeys.isTranscriptionCleanupEnabled)
         guard isEnabled else { return }
 
-        let minutes = UserDefaults.standard.integer(forKey: keyRetentionMinutes)
+        let minutes = UserDefaults.standard.integer(forKey: CleanupSettingsKeys.transcriptionRetentionMinutes)
         if minutes > 0 {
             if let modelContext = self.modelContext {
                 Task { [weak self] in
@@ -74,7 +69,7 @@ class TranscriptionAutoCleanupService {
             do {
                 try FileManager.default.removeItem(at: url)
             } catch {
-                logger.error("Failed to delete audio file: \(error.localizedDescription, privacy: .public)")
+                logger.error("Failed to delete audio file: \(error, privacy: .public)")
             }
         }
 
@@ -84,16 +79,16 @@ class TranscriptionAutoCleanupService {
             try modelContext.save()
             NotificationCenter.default.post(name: .transcriptionDeleted, object: nil)
         } catch {
-            logger.error("Failed to save after transcription deletion: \(error.localizedDescription, privacy: .public)")
+            logger.error("Failed to save after transcription deletion: \(error, privacy: .public)")
         }
     }
 
     private func sweepOldTranscriptions(modelContext: ModelContext) async {
-        guard UserDefaults.standard.bool(forKey: keyIsEnabled) else {
+        guard UserDefaults.standard.bool(forKey: CleanupSettingsKeys.isTranscriptionCleanupEnabled) else {
             return
         }
 
-        let retentionMinutes = UserDefaults.standard.integer(forKey: keyRetentionMinutes)
+        let retentionMinutes = UserDefaults.standard.integer(forKey: CleanupSettingsKeys.transcriptionRetentionMinutes)
         let effectiveMinutes = max(retentionMinutes, 0)
 
         let cutoffDate = Date().addingTimeInterval(TimeInterval(-effectiveMinutes * 60))
@@ -127,13 +122,13 @@ class TranscriptionAutoCleanupService {
                 }
             }
         } catch {
-            logger.error("Failed during transcription cleanup: \(error.localizedDescription, privacy: .public)")
+            logger.error("Failed during transcription cleanup: \(error, privacy: .public)")
         }
     }
 
     /// Deletes audio files in Recordings directory that have no corresponding Transcription record
     private func cleanupOrphanAudioFiles(modelContext: ModelContext) async {
-        guard UserDefaults.standard.bool(forKey: keyIsEnabled) else {
+        guard UserDefaults.standard.bool(forKey: CleanupSettingsKeys.isTranscriptionCleanupEnabled) else {
             return
         }
 
@@ -171,7 +166,7 @@ class TranscriptionAutoCleanupService {
                 logger.notice("Cleaned up \(deletedCount, privacy: .public) orphan audio file(s)")
             }
         } catch {
-            logger.error("Failed during orphan audio cleanup: \(error.localizedDescription, privacy: .public)")
+            logger.error("Failed during orphan audio cleanup: \(error, privacy: .public)")
         }
     }
 }

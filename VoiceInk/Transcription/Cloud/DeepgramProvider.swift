@@ -7,7 +7,8 @@ struct DeepgramProvider: CloudProvider {
     let providerKey: String = "Deepgram"
     let languageCodes: [String]? = [
         "ar", "be", "bg", "bn", "bs", "ca", "cs", "da", "de", "el",
-        "en", "es", "et", "fa", "fi", "fr", "he", "hi", "hr", "hu",
+        "en", "en-US", "en-AU", "en-GB", "en-IN", "en-NZ",
+        "es", "et", "fa", "fi", "fr", "he", "hi", "hr", "hu",
         "id", "it", "ja", "kn", "ko", "lt", "lv", "mk", "mr", "ms",
         "nl", "no", "pl", "pt", "ro", "ru", "sk", "sl", "sr", "sv",
         "ta", "te", "th", "tl", "tr", "uk", "ur", "vi", "zh"
@@ -17,7 +18,7 @@ struct DeepgramProvider: CloudProvider {
     var models: [CloudModel] {[
         CloudModel(
             name: "nova-3",
-            displayName: "Nova 3 (Deepgram)",
+            displayName: "Nova 3",
             description: "Deepgram's latest Nova 3 model for fast, accurate transcription",
             provider: .deepgram,
             speed: 0.99,
@@ -28,7 +29,7 @@ struct DeepgramProvider: CloudProvider {
         ),
         CloudModel(
             name: "nova-3-medical",
-            displayName: "Nova 3 Medical (Deepgram)",
+            displayName: "Nova 3 Medical",
             description: "Specialized medical transcription model optimized for clinical environments",
             provider: .deepgram,
             speed: 0.99,
