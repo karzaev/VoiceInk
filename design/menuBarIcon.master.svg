@@ -1,0 +1,17 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Menu Bar Transcription Icon</title>
+  <desc>Template macOS menu bar icon: abstract voice-to-text mark using vertical waveform bars and horizontal text lines.</desc>
+
+  <!-- Waveform / speech side -->
+  <rect x="18" y="28" width="3" height="8" rx="1.5" fill="#000000" fill-opacity="0.72"/>
+  <rect x="23" y="22" width="3" height="20" rx="1.5" fill="#000000" fill-opacity="0.88"/>
+  <rect x="28" y="26" width="3" height="12" rx="1.5" fill="#000000" fill-opacity="0.78"/>
+
+  <!-- Central transformation axis -->
+  <rect x="34" y="18" width="3" height="28" rx="1.5" fill="#000000" fill-opacity="1"/>
+
+  <!-- Text side -->
+  <rect x="40" y="24" width="8" height="3" rx="1.5" fill="#000000" fill-opacity="0.82"/>
+  <rect x="40" y="31" width="12" height="3" rx="1.5" fill="#000000" fill-opacity="0.92"/>
+  <rect x="40" y="38" width="9" height="3" rx="1.5" fill="#000000" fill-opacity="0.72"/>
+</svg>

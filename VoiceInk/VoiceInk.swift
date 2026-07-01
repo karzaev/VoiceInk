@@ -351,11 +351,8 @@ struct VoiceInkApp: App {
                 .environmentObject(aiService)
                 .environmentObject(enhancementService)
         } label: {
-            Image("menuBarIcon")
-                .renderingMode(.template)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 20, height: 16)
+            // MenuBarExtra ignores SwiftUI .frame; NSImage.size is what controls the rendered size.
+            Image(nsImage: Self.menuBarImage)
         }
         .menuBarExtraStyle(.menu)
 
@@ -367,6 +364,13 @@ struct VoiceInkApp: App {
         }
         #endif
     }
+
+    private static let menuBarImage: NSImage = {
+        let image = NSImage(named: "menuBarIcon") ?? NSImage()
+        image.size = NSSize(width: 24, height: 18)
+        image.isTemplate = true
+        return image
+    }()
 
     private func showAccessibilityReminderIfNeeded() {
         guard !didShowAccessibilityReminder else { return }

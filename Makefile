@@ -44,17 +44,14 @@ setup: whisper
 build: setup
 	xcodebuild -project VoiceInk.xcodeproj -scheme VoiceInk -configuration Debug CODE_SIGN_IDENTITY="" build
 
-# Build for local use without Apple Developer certificate
+# Build for local use with personal Apple Development cert (stable identity across rebuilds)
 local: check setup
-	@echo "Building VoiceInk for local use (no Apple Developer certificate required)..."
+	@echo "Building VoiceInk for local use with personal Apple Development cert..."
 	@rm -rf "$(LOCAL_DERIVED_DATA)"
 	xcodebuild -project VoiceInk.xcodeproj -scheme VoiceInk -configuration Debug \
 		-derivedDataPath "$(LOCAL_DERIVED_DATA)" \
 		-xcconfig LocalBuild.xcconfig \
-		CODE_SIGN_IDENTITY="-" \
-		CODE_SIGNING_REQUIRED=NO \
-		CODE_SIGNING_ALLOWED=YES \
-		DEVELOPMENT_TEAM="" \
+		-allowProvisioningUpdates \
 		CODE_SIGN_ENTITLEMENTS="$(CURDIR)/VoiceInk/VoiceInk.local.entitlements" \
 		SWIFT_ACTIVE_COMPILATION_CONDITIONS='$$(inherited) LOCAL_BUILD' \
 		build

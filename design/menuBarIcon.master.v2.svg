@@ -1,0 +1,20 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Menu Bar Transcription Icon</title>
+  <desc>Template macOS menu bar icon: abstract speech-to-text mark with compact waveform bars and text lines.</desc>
+
+  <!-- All elements are solid black for macOS template rendering. -->
+  <!-- Visual bounds: x 20–47, y 22–42. Centered in 64×64 canvas. -->
+
+  <!-- Waveform / speech side -->
+  <rect x="20" y="29" width="3" height="6" rx="1.5" fill="#000000"/>
+  <rect x="25" y="24" width="3" height="16" rx="1.5" fill="#000000"/>
+  <rect x="30" y="27" width="3" height="10" rx="1.5" fill="#000000"/>
+
+  <!-- Central transformation axis, intentionally only slightly taller -->
+  <rect x="35" y="22" width="3" height="20" rx="1.5" fill="#000000"/>
+
+  <!-- Text side, shortened for better optical balance in the macOS menu bar -->
+  <rect x="40" y="25" width="7" height="3" rx="1.5" fill="#000000"/>
+  <rect x="40" y="31" width="10" height="3" rx="1.5" fill="#000000"/>
+  <rect x="40" y="37" width="7" height="3" rx="1.5" fill="#000000"/>
+</svg>
