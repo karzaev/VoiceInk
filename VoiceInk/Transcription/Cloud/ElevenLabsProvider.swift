@@ -42,7 +42,7 @@ struct ElevenLabsProvider: CloudProvider {
         )
     ]}
 
-    func transcribe(audioData: Data, fileName: String, apiKey: String, model: String, language: String?, prompt: String?, customVocabulary: [String]) async throws -> String {
+    func transcribe(audioData: Data, fileName: String, apiKey: String, model: String, language: String?, customVocabulary: [String]) async throws -> String {
         return try await ElevenLabsClient.transcribe(
             audioData: audioData,
             fileName: fileName,
@@ -53,7 +53,7 @@ struct ElevenLabsProvider: CloudProvider {
     }
 
     func makeStreamingProvider(modelContext: ModelContext) -> (any StreamingTranscriptionProvider)? {
-        ElevenLabsStreamingProvider()
+        ElevenLabsStreamingProvider(modelContext: modelContext)
     }
 
     func verifyAPIKey(_ key: String) async -> (isValid: Bool, errorMessage: String?) {

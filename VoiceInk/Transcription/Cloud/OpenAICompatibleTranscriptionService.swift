@@ -13,7 +13,12 @@ class OpenAICompatibleTranscriptionService {
         request.setValue("Bearer \(model.apiKey)", forHTTPHeaderField: "Authorization")
 
         let body = try buildRequestBody(audioURL: audioURL, modelName: model.modelName, boundary: boundary, context: context)
-        let (data, response) = try await URLSession.shared.upload(for: request, from: body)
+        // Ephemeral session per request: the shared session persists Alt-Svc and upgrades
+        // new connections to HTTP/3, but QUIC bulk uploads blackhole behind VPNs that drop
+        // full-size UDP datagrams (e.g. GlobalProtect), timing out large audio uploads.
+        let session = URLSession(configuration: .ephemeral)
+        defer { session.finishTasksAndInvalidate() }
+        let (data, response) = try await session.upload(for: request, from: body)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw CloudTranscriptionError.networkError(URLError(.badServerResponse))
@@ -37,7 +42,6 @@ class OpenAICompatibleTranscriptionService {
         }
 
         let selectedLanguage = context.language ?? "auto"
-        let prompt = context.prompt ?? ""
         let crlf = "\r\n"
         var body = Data()
 
@@ -61,9 +65,6 @@ class OpenAICompatibleTranscriptionService {
 
         if selectedLanguage != "auto" && !selectedLanguage.isEmpty {
             field("language", selectedLanguage)
-        }
-        if !prompt.isEmpty {
-            field("prompt", prompt)
         }
 
         append("--\(boundary)--\(crlf)")
