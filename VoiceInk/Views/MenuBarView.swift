@@ -15,7 +15,28 @@ struct MenuBarView: View {
     @ObservedObject var audioDeviceManager = AudioDeviceManager.shared
     @AppStorage("hasCompletedOnboardingV2") private var hasCompletedOnboardingV2 = false
     @State private var launchAtLoginEnabled = LaunchAtLogin.isEnabled
-    
+    @Environment(\.openWindow) private var openWindow
+
+    // Opens (creating if needed) the main WindowGroup window and optionally
+    // navigates it. Using SwiftUI's openWindow is what makes this work while the
+    // app is a menu-bar-only (.accessory) app — where no main window exists yet
+    // and NSWindow-based reopen has nothing to show.
+    private func showMainWindow(navigatingTo destination: String? = nil) {
+        NSApplication.shared.setActivationPolicy(.regular)
+        openWindow(id: "main")
+        NSApplication.shared.activate(ignoringOtherApps: true)
+
+        if let destination {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                NotificationCenter.default.post(
+                    name: .navigateToDestination,
+                    object: nil,
+                    userInfo: ["destination": destination]
+                )
+            }
+        }
+    }
+
     var body: some View {
         VStack {
             if hasCompletedOnboardingV2 {
@@ -29,7 +50,7 @@ struct MenuBarView: View {
     private var onboardingMenu: some View {
         Group {
             Button("Complete Onboarding") {
-                menuBarManager.focusMainWindow()
+                showMainWindow()
             }
 
             Divider()
@@ -66,11 +87,11 @@ struct MenuBarView: View {
                 Divider()
 
                 Button("Manage Modes") {
-                    menuBarManager.openMainWindowAndNavigate(to: "Modes")
+                    showMainWindow(navigatingTo: "Modes")
                 }
 
                 Button("Manage Models") {
-                    menuBarManager.openMainWindowAndNavigate(to: "AI Models")
+                    showMainWindow(navigatingTo: "AI Models")
                 }
             } label: {
                 HStack {
@@ -141,7 +162,7 @@ struct MenuBarView: View {
             Divider()
 
             Button("Settings") {
-                menuBarManager.openMainWindowAndNavigate(to: "Settings")
+                showMainWindow(navigatingTo: "Settings")
             }
             .keyboardShortcut(",", modifiers: .command)
 

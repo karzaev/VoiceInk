@@ -263,7 +263,7 @@ struct VoiceInkApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: "main") {
             Group {
                 if hasCompletedOnboardingV2 {
                     ContentView()
